@@ -1,0 +1,12 @@
+image,velocity,angular_velocity
+images/camera_image_0.png,0.0,0.0
+images/camera_image_1.png,0.0,-0.1
+images/camera_image_2.png,0.0,-0.1
+images/camera_image_3.png,0.0,-0.1
+images/camera_image_4.png,0.0,-0.6
+images/camera_image_5.png,0.0,-0.8999999999999999
+images/camera_image_6.png,0.0,-0.8999999999999999
+images/camera_image_7.png,0.0,-0.7999999999999999
+images/camera_image_8.png,0.0,0.0
+images/camera_image_9.png,0.05999999999999999,0.0
+images/camera_image_10.png,0.0,0.0
