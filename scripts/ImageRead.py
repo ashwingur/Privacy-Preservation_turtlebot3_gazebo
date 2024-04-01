@@ -49,10 +49,11 @@ class ImageSubscriber(Node):
             self.get_logger().error('Error converting ROS Image to OpenCV image: %s' % str(e))
             return
 
-        # Check if 1.0 seconds have passed since the last image capture
+        # if IMAGE_FREQUENCY seconds have passed since the last capture, then do another capture
         current_time = time.time()
         if current_time - self.last_image_time >= self.IMAGE_FREQUENCY:
             self.last_image_time = current_time
+            print(self.last_image_time)
             self.save_data()
 
         # Display the image
@@ -76,7 +77,7 @@ class ImageSubscriber(Node):
                 data_entry['y'] = 0.0
 
             self.data.append(data_entry)
-            print(f'Saved datapoint: {len(self.data)}')
+            print(f'Saved datapoint: {len(self.data) - 1}')
 
 def main(args=None):
     rclpy.init(args=args)
@@ -85,11 +86,12 @@ def main(args=None):
         while rclpy.ok():
             rclpy.spin_once(image_subscriber)
             # After x images, break (extend later to allow for a keypress to break)
-            if len(image_subscriber.data) == 3:
-                save_to_file(image_subscriber.data)
-                break
+            # if len(image_subscriber.data) == 3:
+            #     save_to_file(image_subscriber.data)
+            #     break
     except KeyboardInterrupt:
-        pass
+        print('KEYBOARD INTERRUPT, Saving data')
+        save_to_file(image_subscriber.data)
 
     # Clean up
     image_subscriber.destroy_node()
