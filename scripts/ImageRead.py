@@ -111,7 +111,7 @@ def save_to_file(data):
         writer = csv.DictWriter(file, fieldnames=['image', 'velocity', 'angular_velocity', 'x', 'y'])
         writer.writeheader()
         for index, entry in enumerate(data):
-            image_name = f'images/camera_image_{index}.png'
+            image_name = f'camera_image_{index}.png'
             writer.writerow({'image': image_name, 'velocity': entry['velocity'], 'angular_velocity': entry['angular_velocity'], 'x': entry['x'],'y': entry['y']})
             cv2.imwrite(image_name, entry['image'])
     
