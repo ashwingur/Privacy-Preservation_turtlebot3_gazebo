@@ -39,7 +39,7 @@ class ImageSubscriber(Node):
         self.data = []
 
         # How often an image will be capture in seconds
-        self.IMAGE_FREQUENCY = 0.5
+        self.IMAGE_FREQUENCY = 0.1
 
     def image_callback(self, msg):
         try:
