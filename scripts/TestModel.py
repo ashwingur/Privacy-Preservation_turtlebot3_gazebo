@@ -9,7 +9,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Define transformations
 data_transform = transforms.Compose([
-    transforms.Resize((32, 32)),
+    # transforms.Resize((32, 32)),
     transforms.ToTensor(),
 ])
 
@@ -19,7 +19,7 @@ train_dataset = TurtlebotImages(csv_file='training.csv',
                                transform=data_transform)
 
 # Define DataLoader
-train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 
 def test_model(model, test_loader, device):
     model.eval()
