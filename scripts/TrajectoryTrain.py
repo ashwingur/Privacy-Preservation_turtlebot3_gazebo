@@ -1,5 +1,3 @@
-
-
 '''
 This script takes in a directory of captured images and a csv that contains the corresponding state of the
 robot at that time (we are interested in image name and angular velocity). It trains a neural network on this
@@ -79,7 +77,7 @@ if __name__ == "__main__":
     for epoch in range(num_epochs):
         start_time = time.time()
         # Set to 1 to not skip anything, 2 skip every second image and so on
-        SKIP_AMOUNT = 2
+        SKIP_AMOUNT = 1
         count = 0
         model.train()
         for images, labels in train_loader:

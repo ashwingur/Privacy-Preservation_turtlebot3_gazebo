@@ -20,7 +20,7 @@ train_dataset = TurtlebotImages(csv_file='training.csv',
                                transform=data_transform)
 
 # Define DataLoader
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
 
 def test_model(model, test_loader, device):
     start_time = time.time()
@@ -30,6 +30,7 @@ def test_model(model, test_loader, device):
     print("Running test")
     with torch.no_grad():
         for images, labels in test_loader:
+            print(images[0].size())
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
@@ -37,7 +38,7 @@ def test_model(model, test_loader, device):
             correct += (predicted == labels).sum().item()
 
     accuracy = 100 * correct / total
-    total_time = time.time() - time.time()
+    total_time = time.time() - start_time
     print(f'Accuracy of the model on the test images: {accuracy:.2f}%')
     print(f"Finished testing, total time taken: {total_time/60.0:.2f} minutes")
 
