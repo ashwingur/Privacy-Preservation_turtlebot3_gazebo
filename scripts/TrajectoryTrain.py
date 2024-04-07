@@ -1,12 +1,11 @@
 
 
-# We are given a path to the images and a csv containing the image angular velocity
-
-# Make some sort of data loader class to load the training data
-
-# Create the NN class for init and forward
-
-# Create the learning script and save the weights
+'''
+This script takes in a directory of captured images and a csv that contains the corresponding state of the
+robot at that time (we are interested in image name and angular velocity). It trains a neural network on this
+data by mapping the input images to a steering command. The steering command is the angular velocity translated to
+a direction (left, right or straight). The model is saved so that it can be loaded by another script.
+'''
 
 import torch
 from torch.utils.data import DataLoader
