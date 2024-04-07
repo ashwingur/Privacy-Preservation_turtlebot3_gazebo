@@ -43,7 +43,3 @@ model.load_state_dict(torch.load('model_weights.pth'))
 test_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 
 test_model(model, test_loader, device)
-
-
-
-

@@ -1,4 +1,4 @@
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, Sampler
 import pandas as pd
 from PIL import Image
 import os
@@ -35,3 +35,15 @@ class TurtlebotImages(Dataset):
         else:
             # Left
             return 2
+
+class CustomSampler(Sampler):
+    def __init__(self, data_source, subset_size):
+        self.data_source = data_source
+        self.subset_size = subset_size
+        self.indices = list(range(len(self.data_source)))
+    
+    def __iter__(self):
+        return iter(np.random.choice(self.indices, size=self.subset_size, replace=False))
+    
+    def __len__(self):
+        return self.subset_size
