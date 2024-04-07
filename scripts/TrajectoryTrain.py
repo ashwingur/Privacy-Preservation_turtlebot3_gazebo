@@ -22,14 +22,14 @@ import matplotlib.pyplot as plt
 
 
 class CNN(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self):
         super(CNN, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1 = nn.Linear(16 * 93 * 51, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, num_classes)
+        self.fc3 = nn.Linear(84, 3)
 
     def forward(self, x):
         """Forward pass of the neural network"""
@@ -62,10 +62,10 @@ if __name__ == "__main__":
                                     transform=data_transform)
 
     # Define DataLoader
-    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
     # Initialize the model
-    model = CNN(num_classes=3).to(device)
+    model = CNN().to(device)
 
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
@@ -78,6 +78,7 @@ if __name__ == "__main__":
     num_epochs = 10  # Change this as needed
     for epoch in range(num_epochs):
         start_time = time.time()
+        # Set to 1 to not skip anything, 2 skip every second image and so on
         SKIP_AMOUNT = 2
         count = 0
         model.train()
