@@ -1,3 +1,4 @@
+import numpy as np
 from torch.utils.data import Dataset, Sampler
 import pandas as pd
 from PIL import Image

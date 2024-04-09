@@ -27,6 +27,11 @@ class TurtlebotDrive(Node):
         self.subscription  # prevent unused variable warning
         self.bridge = CvBridge()
         self.current_image = None
+
+        # Initialise velocity and angular velocity
+        # We always start by going straight
+        self.velocity = 1
+        self.ang_velocity = 0
         
         # Load the machine learning model
         # Check if GPU is available
@@ -59,15 +64,23 @@ class TurtlebotDrive(Node):
         # Transpose from RGB to tensor format and add a batch dimension to the start
         image_tensor = torch.from_numpy(np.expand_dims(np.transpose(image, (2, 1, 0)), axis=0)).float()
         image_tensor = image_tensor.to(self.device)
+        # Normalize the tensor
+        # Normalize tensor between 0 and 1
+        min_value = torch.min(image_tensor)
+        max_value = torch.max(image_tensor)
+        image_tensor = (image_tensor - min_value) / (max_value - min_value)
+        # print(image_tensor)
         # Should be [3, 384, 216]
         print(image_tensor.size())
-        prediction = self.model(image_tensor)
-        print(f'prediction is {prediction}')
+        with torch.no_grad():
+            outputs = self.model(image_tensor)
+            print(outputs)
+            _, predicted = torch.max(outputs, 1)
+            print(f'prediction is {predicted}')
 
 def main(args=None):
     rclpy.init(args=args)
     turtlebot = TurtlebotDrive()
-    rate = turtlebot.create_rate(1)
     # Spin in a separate thread
     spin_thread = threading.Thread(target=rclpy.spin, args=(turtlebot, ), daemon=True)
     spin_thread.start()
