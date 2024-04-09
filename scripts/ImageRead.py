@@ -85,10 +85,6 @@ def main(args=None):
     try:
         while rclpy.ok():
             rclpy.spin_once(image_subscriber)
-            # After x images, break (extend later to allow for a keypress to break)
-            # if len(image_subscriber.data) == 3:
-            #     save_to_file(image_subscriber.data)
-            #     break
     except KeyboardInterrupt:
         print('KEYBOARD INTERRUPT, Saving data')
         save_to_file(image_subscriber.data)
