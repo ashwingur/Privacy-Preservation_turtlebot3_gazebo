@@ -104,7 +104,7 @@ if __name__ == "__main__":
     # Plot the loss
     plt.plot(list(range(1, num_epochs + 1)), training_losses, marker='o')
     plt.title('Loss Over Time')
-    plt.xlabel('Time Steps')
+    plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.grid(True)
     # Set integer ticks on the x-axis
