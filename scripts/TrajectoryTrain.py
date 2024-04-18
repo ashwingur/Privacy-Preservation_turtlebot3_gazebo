@@ -84,7 +84,7 @@ if __name__ == "__main__":
     ENABLE_EPOCH_TESTING = True
     TRAINING_PORTION = 0.9
 
-    EPOCHS = 3
+    EPOCHS = 1
 
     # CSV and image paths
     CSV_FILE = "training.csv"
