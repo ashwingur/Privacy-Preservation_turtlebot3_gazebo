@@ -12,7 +12,7 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from TurtlebotDataLoader import TurtlebotImages
+from TurtlebotDataLoader import TurtlebotDataLoader
 import time
 import matplotlib.pyplot as plt
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     ])
 
     # Load dataset
-    train_dataset = TurtlebotImages(csv_file='training.csv',
+    train_dataset = TurtlebotDataLoader(csv_file='training.csv',
                                     image_dir='training',
                                     transform=data_transform)
 

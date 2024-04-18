@@ -1,30 +1,32 @@
 import torch
 from TrajectoryTrain import CNN
-from TurtlebotDataLoader import TurtlebotImages
+from TurtlebotDataLoader import TurtlebotDataLoader
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import time
 
 
-def test_model(model, test_loader, device):
+def test_model(model, test_loader, device, num_classes=3):
     start_time = time.time()
     model.eval()
-    correct = 0
-    total = 0
+    correct = [0] * num_classes
+    total_per_class = [0] * num_classes  # Renamed to avoid conflict
     print("Running test")
     with torch.no_grad():
         for images, labels in test_loader:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
-            # print(outputs)
-            _, predicted = torch.max(outputs.data, 1)
-            print(predicted.item())
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
+            _, predicted = torch.max(outputs, 1)
+            total = labels.size(0)
+            for i in range(num_classes):
+                correct[i] += ((predicted == i) & (labels == i)).sum().item()
+                total_per_class[i] += (labels == i).sum().item()  # Fixed the variable name
 
-    accuracy = 100 * correct / total
+    overall_accuracy = 100 * sum(correct) / sum(total_per_class)
     total_time = time.time() - start_time
-    print(f'Accuracy of the model on the test images: {accuracy:.2f}%')
+    print(f'Overall Accuracy of the model on the test images: {overall_accuracy:.2f}%')
+    for i in range(num_classes):
+        print(f"Accuracy for class '{TurtlebotDataLoader.label_to_direction_string(i)}': {(correct[i]/total_per_class[i]*100):.2f}% ({correct[i]}/{total_per_class[i]})")
     print(f"Finished testing, total time taken: {total_time/60.0:.2f} minutes")
 
 if __name__ == '__main__':
@@ -38,8 +40,8 @@ if __name__ == '__main__':
     ])
 
     # Load dataset
-    train_dataset = TurtlebotImages(csv_file='image_velocity_data.csv',
-                                image_dir='images',
+    train_dataset = TurtlebotDataLoader(csv_file='training.csv',
+                                image_dir='training',
                                 transform=data_transform)
     model = CNN().to(device)
     model.load_state_dict(torch.load('model_weights.pth'))
