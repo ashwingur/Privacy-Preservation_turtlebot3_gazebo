@@ -32,6 +32,8 @@ def test_model(model, test_loader, device, num_classes=3):
             print(f"Accuracy for class '{TurtlebotDataLoader.label_to_direction_string(i)}': {(correct[i]/total_per_class[i]*100):.2f}% ({correct[i]}/{total_per_class[i]})")
     print(f"Finished testing, total time taken: {total_time/60.0:.2f} minutes")
 
+    return overall_accuracy
+
 if __name__ == '__main__':
     # Check if GPU is available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

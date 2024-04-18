@@ -39,7 +39,7 @@ class ImageSubscriber(Node):
         self.data = []
 
         # How often an image will be capture in seconds
-        self.IMAGE_FREQUENCY = 0.1
+        self.IMAGE_FREQUENCY = 0.25
 
         # Initialise image directory if it doesn't exist
         IMAGE_PATH = 'images'
@@ -63,7 +63,7 @@ class ImageSubscriber(Node):
         current_time = time.time()
         if current_time - self.last_image_time >= self.IMAGE_FREQUENCY:
             self.last_image_time = current_time
-            print(self.last_image_time)
+            # print(self.last_image_time)
             self.save_data()
 
         # Display the image
