@@ -14,7 +14,7 @@ import threading
 import cv2
 import torch
 import numpy as np
-from TrajectoryTrain import CNN
+from TrajectoryTrain import TurtlebotCNN
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -48,7 +48,7 @@ class TurtlebotDrive(Node):
         # Load the machine learning model
         # Check if GPU is available
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = CNN().to(self.device)
+        self.model = TurtlebotCNN().to(self.device)
         self.model.load_state_dict(torch.load('model_weights.pth'))
         self.model.eval()
         self.IMAGE_RESIZE_W = 384
@@ -123,8 +123,9 @@ class TurtlebotDrive(Node):
         x_ref = df['x'].values
         y_ref = df['y'].values
 
-        plt.plot(self.x_positions, self.y_positions, 'r-', label='Live')  # Plot the first set in red with lines connecting consecutive points
-        plt.plot(x_ref, y_ref, 'b-', label='Trained')  # Plot the second set in blue with lines connecting consecutive points
+
+        plt.plot(self.x_positions, self.y_positions, 'r-', label='Live', alpha=0.5, linewidth=2.5)  # Plot the first set in red with lines connecting consecutive points
+        plt.plot(x_ref, y_ref, 'b-', label='Trained', alpha=0.5)  # Plot the second set in blue with lines connecting consecutive points
         # plt.scatter(x1, y1, color='red')  # Scatter plot the points of the first set in red
         # plt.scatter(x2, y2, color='blue')  # Scatter plot the points of the second set in blue
         plt.xlabel('X Position')  # Label for x-axis

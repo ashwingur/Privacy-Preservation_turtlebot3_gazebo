@@ -1,5 +1,5 @@
 import torch
-from TrajectoryTrain import CNN
+from TrajectoryTrain import TurtlebotCNN
 from TurtlebotDataLoader import TurtlebotDataLoader
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
@@ -17,8 +17,8 @@ def test_model(model, test_loader, device, num_classes=3):
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
             _, predicted = torch.max(outputs, 1)
-            total = labels.size(0)
             for i in range(num_classes):
+                # print(f'{predicted}, {labels}')
                 correct[i] += ((predicted == i) & (labels == i)).sum().item()
                 total_per_class[i] += (labels == i).sum().item()  # Fixed the variable name
 
@@ -26,7 +26,10 @@ def test_model(model, test_loader, device, num_classes=3):
     total_time = time.time() - start_time
     print(f'Overall Accuracy of the model on the test images: {overall_accuracy:.2f}%')
     for i in range(num_classes):
-        print(f"Accuracy for class '{TurtlebotDataLoader.label_to_direction_string(i)}': {(correct[i]/total_per_class[i]*100):.2f}% ({correct[i]}/{total_per_class[i]})")
+        if total_per_class[i] == 0:
+            print(f"Accuracy for class '{TurtlebotDataLoader.label_to_direction_string(i)}': ({correct[i]}/{total_per_class[i]})")
+        else:
+            print(f"Accuracy for class '{TurtlebotDataLoader.label_to_direction_string(i)}': {(correct[i]/total_per_class[i]*100):.2f}% ({correct[i]}/{total_per_class[i]})")
     print(f"Finished testing, total time taken: {total_time/60.0:.2f} minutes")
 
 if __name__ == '__main__':
@@ -43,7 +46,7 @@ if __name__ == '__main__':
     train_dataset = TurtlebotDataLoader(csv_file='training.csv',
                                 image_dir='training',
                                 transform=data_transform)
-    model = CNN().to(device)
+    model = TurtlebotCNN().to(device)
     model.load_state_dict(torch.load('model_weights.pth'))
     test_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
     test_model(model, test_loader, device)

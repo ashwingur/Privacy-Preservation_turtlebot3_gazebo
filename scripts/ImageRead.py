@@ -41,6 +41,16 @@ class ImageSubscriber(Node):
         # How often an image will be capture in seconds
         self.IMAGE_FREQUENCY = 0.1
 
+        # Initialise image directory if it doesn't exist
+        IMAGE_PATH = 'images'
+        if not os.path.exists(IMAGE_PATH):
+            os.makedirs(IMAGE_PATH)
+        
+        # Delete all old image data if present
+        for filename in os.listdir(IMAGE_PATH):
+            if filename.endswith('.png'):
+                os.remove(os.path.join(IMAGE_PATH, filename))
+
     def image_callback(self, msg):
         try:
             # Convert ROS Image message to OpenCV image
@@ -68,7 +78,8 @@ class ImageSubscriber(Node):
 
     def save_data(self):
         if self.cv_image is not None:
-            data_entry = {'image': self.cv_image, 'velocity': self.velocity.linear.x, 'angular_velocity': self.velocity.angular.z}
+            # data_entry = {'image': self.cv_image, 'velocity': self.velocity.linear.x, 'angular_velocity': self.velocity.angular.z}
+            data_entry = {'velocity': self.velocity.linear.x, 'angular_velocity': self.velocity.angular.z}
             if self.position is not None:
                 data_entry['x'] = self.position.x
                 data_entry['y'] = self.position.y
@@ -78,6 +89,13 @@ class ImageSubscriber(Node):
 
             self.data.append(data_entry)
             print(f'Saved datapoint: {len(self.data) - 1}')
+
+            # Also save the image now to save some time instead of at the end
+            image_name = f'images/camera_image_{len(self.data)-1}.png'
+            cv2.imwrite(image_name, self.cv_image)
+    
+
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -95,21 +113,21 @@ def main(args=None):
 
 def save_to_file(data):
     with open('image_velocity_data.csv', mode='w', newline='') as file:
-        IMAGE_PATH = 'images'
-        if not os.path.exists(IMAGE_PATH):
-            os.makedirs(IMAGE_PATH)
+        # IMAGE_PATH = 'images'
+        # if not os.path.exists(IMAGE_PATH):
+        #     os.makedirs(IMAGE_PATH)
         
-        # Delete all old data
-        for filename in os.listdir(IMAGE_PATH):
-            if filename.endswith('.png'):
-                os.remove(os.path.join(IMAGE_PATH, filename))
+        # # Delete all old data
+        # for filename in os.listdir(IMAGE_PATH):
+        #     if filename.endswith('.png'):
+        #         os.remove(os.path.join(IMAGE_PATH, filename))
 
         writer = csv.DictWriter(file, fieldnames=['image', 'velocity', 'angular_velocity', 'x', 'y'])
         writer.writeheader()
         for index, entry in enumerate(data):
-            image_name = f'images/camera_image_{index}.png'
+            image_name = f'camera_image_{index}.png'
             writer.writerow({'image': image_name, 'velocity': entry['velocity'], 'angular_velocity': entry['angular_velocity'], 'x': entry['x'],'y': entry['y']})
-            cv2.imwrite(f'camera_image_{index}.png', entry['image'])
+            # cv2.imwrite(f'camera_image_{index}.png', entry['image'])
     
     print("Data saved to image_velocity_data.csv")
 

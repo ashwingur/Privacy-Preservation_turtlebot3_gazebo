@@ -19,9 +19,9 @@ import matplotlib.pyplot as plt
 # Define CNN model
 
 
-class CNN(nn.Module):
+class TurtlebotCNN(nn.Module):
     def __init__(self):
-        super(CNN, self).__init__()
+        super(TurtlebotCNN, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
@@ -63,11 +63,13 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
     # Initialize the model
-    model = CNN().to(device)
+    model = TurtlebotCNN().to(device)
 
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+    print("Starting training loop...")
 
 
     # Training loop
