@@ -8,10 +8,11 @@ import cv2
 import time
 import csv
 import os
+import sys
 
 class ImageSubscriber(Node):
 
-    def __init__(self):
+    def __init__(self, image_folder, last_image_index):
         super().__init__('image_subscriber')
         self.subscription_image = self.create_subscription(
             Image,
@@ -38,18 +39,22 @@ class ImageSubscriber(Node):
         self.last_image_time = time.time()
         self.data = []
 
+        self.previous_train_index = last_image_index
+
         # How often an image will be capture in seconds
         self.IMAGE_FREQUENCY = 0.25
 
         # Initialise image directory if it doesn't exist
-        IMAGE_PATH = 'images'
-        if not os.path.exists(IMAGE_PATH):
-            os.makedirs(IMAGE_PATH)
+        self.IMAGE_PATH = image_folder
+        print(f'image path is {self.IMAGE_PATH}')
+        if not os.path.exists(self.IMAGE_PATH):
+            os.makedirs(self.IMAGE_PATH)
+            print("making new folder")
         
         # Delete all old image data if present
-        for filename in os.listdir(IMAGE_PATH):
-            if filename.endswith('.png'):
-                os.remove(os.path.join(IMAGE_PATH, filename))
+        # for filename in os.listdir(IMAGE_PATH):
+        #     if filename.endswith('.png'):
+        #         os.remove(os.path.join(IMAGE_PATH, filename))
 
     def image_callback(self, msg):
         try:
@@ -88,48 +93,82 @@ class ImageSubscriber(Node):
                 data_entry['y'] = 0.0
 
             self.data.append(data_entry)
-            print(f'Saved datapoint: {len(self.data) - 1}')
+            print(f'Saved datapoint: {self.previous_train_index + len(self.data) - 1}')
 
             # Also save the image now to save some time instead of at the end
-            image_name = f'images/camera_image_{len(self.data)-1}.png'
+            image_name = f'{self.IMAGE_PATH}/{self.previous_train_index +len(self.data)-1}.png'
             cv2.imwrite(image_name, self.cv_image)
     
 
 
 
 def main(args=None):
+    if len(sys.argv) != 3:
+        print('Usage python3 ImageRead.py <image_folder> <training csv>')
+        return
+    
+    image_folder = sys.argv[1]
+    training_csv = sys.argv[2]
+    
+
     rclpy.init(args=args)
-    image_subscriber = ImageSubscriber()
+    image_subscriber = ImageSubscriber(image_folder, last_image_index(training_csv))
     try:
         while rclpy.ok():
             rclpy.spin_once(image_subscriber)
     except KeyboardInterrupt:
         print('KEYBOARD INTERRUPT, Saving data')
-        save_to_file(image_subscriber.data)
+        save_to_file(image_subscriber.data, training_csv)
 
     # Clean up
     image_subscriber.destroy_node()
     rclpy.shutdown()
 
-def save_to_file(data):
-    with open('image_velocity_data.csv', mode='w', newline='') as file:
-        # IMAGE_PATH = 'images'
-        # if not os.path.exists(IMAGE_PATH):
-        #     os.makedirs(IMAGE_PATH)
-        
-        # # Delete all old data
-        # for filename in os.listdir(IMAGE_PATH):
-        #     if filename.endswith('.png'):
-        #         os.remove(os.path.join(IMAGE_PATH, filename))
-
-        writer = csv.DictWriter(file, fieldnames=['image', 'velocity', 'angular_velocity', 'x', 'y'])
-        writer.writeheader()
-        for index, entry in enumerate(data):
-            image_name = f'camera_image_{index}.png'
-            writer.writerow({'image': image_name, 'velocity': entry['velocity'], 'angular_velocity': entry['angular_velocity'], 'x': entry['x'],'y': entry['y']})
-            # cv2.imwrite(f'camera_image_{index}.png', entry['image'])
+def last_image_index(csvfile):
+    if os.path.exists(csvfile):
+            # Get the last index from the existing file
+            with open(csvfile, mode='r', newline='') as f:
+                reader = csv.DictReader(f)
+                last_row = None
+                for row in reader:
+                    last_row = row
+                if last_row:
+                    last_index = int(last_row['image'].split('.')[0]) + 1
+                else:
+                    last_index = 0
+    else:
+        last_index = 0
     
-    print("Data saved to image_velocity_data.csv")
+    return last_index
+
+
+def save_to_file(data, csvfile):
+    file_exists = os.path.exists(csvfile)
+
+    with open(csvfile, mode='a' if file_exists else 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=['image', 'velocity', 'angular_velocity', 'x', 'y'])
+
+        if not file_exists:
+            writer.writeheader()
+
+        if file_exists:
+            # Get the last index from the existing file
+            with open(csvfile, mode='r', newline='') as f:
+                reader = csv.DictReader(f)
+                last_row = None
+                for row in reader:
+                    last_row = row
+                if last_row:
+                    last_index = int(last_row['image'].split('.')[0]) + 1
+                else:
+                    last_index = 0
+        else:
+            last_index = 0
+
+        for entry in data:
+            image_name = f'{last_index}.png'
+            writer.writerow({'image': image_name, 'velocity': entry['velocity'], 'angular_velocity': entry['angular_velocity'], 'x': entry['x'],'y': entry['y']})
+            last_index += 1
 
 if __name__ == '__main__':
     main()
