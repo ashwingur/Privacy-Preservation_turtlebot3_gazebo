@@ -93,9 +93,9 @@ if __name__ == "__main__":
 
     # Proportion of dataset for training (0-1)
     ENABLE_EPOCH_TESTING = True
-    TRAINING_PORTION = 0.9
+    TRAINING_PORTION = 0.90
 
-    EPOCHS = 12
+    EPOCHS = 20
 
 
     # Check if GPU is available
@@ -183,5 +183,5 @@ if __name__ == "__main__":
 
     # Save the model weights
     print('Saving model...')
-    torch.save(model.state_dict(), 'MODEL_FILENAME')
+    torch.save(model.state_dict(), MODEL_FILENAME)
     print('Saved!')

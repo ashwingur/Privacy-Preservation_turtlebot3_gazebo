@@ -195,11 +195,9 @@ def main(args=None):
     print("Shutting down")
     spin_thread.join()
     turtlebot.destroy_node()
-    if len(sys.argv) == 2:
-        print("plotting trajectory")
-        turtlebot.plot_trajectory(sys.argv[1])
-    else:
-        print("No training csv provided, unable to plot")
+    
+    print("plotting trajectory")
+    turtlebot.plot_trajectory(sys.argv[1])
     # rclpy.shutdown()
 
 if __name__ == '__main__':
