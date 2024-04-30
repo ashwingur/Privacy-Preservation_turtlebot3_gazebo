@@ -168,7 +168,7 @@ class TurtlebotDrive(Node):
         plt.title("Live and Trained Trajectories")
         plt.legend()  # Show legend
         plt.grid(True)  # Show grid
-        plt.savefig("trajectory_comparison.png")
+        plt.savefig("results/trajectory_comparison.png")
         plt.show()  # Show the plot
 
 

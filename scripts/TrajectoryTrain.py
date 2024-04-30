@@ -77,7 +77,7 @@ def plot_performance(train_metric, val_metric, metric_name):
     plt.xlabel('Epochs')
     plt.ylabel(metric_name)
     plt.legend()
-    plt.savefig(f'Training_and_Validation_{metric_name}.png')
+    plt.savefig(f'results/Training_and_Validation_{metric_name}.png')
 
 
 if __name__ == "__main__":
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     ENABLE_EPOCH_TESTING = True
     TRAINING_PORTION = 0.9
 
-    EPOCHS = 20
+    EPOCHS = 15
 
 
     # Check if GPU is available
@@ -153,13 +153,16 @@ if __name__ == "__main__":
             optimizer.step()
         training_losses.append(loss.item())
         epoch_time = time.time() - start_time
-        total_time += epoch_time
         print(f'Epoch [{epoch+1}/{EPOCHS}], Loss: {loss.item():.4f}. Time taken: {epoch_time/60.0:.2f} minutes')
 
         # Evaluate the model accuracy on testing and training data at the current epoch
         if ENABLE_EPOCH_TESTING:
+            print("Evaluating training set accuracy:")
             training_accuracies.append(test_model(model, train_loader, device))
+            print("Evaluating validation set accuracy:")
             validation_accuracies.append(test_model(model, val_loader, device))
+        total_time += time.time() - start_time
+        print(f'Starting next epoch\n')
 
     print(f"Finished training, total time taken: {total_time/60.0:.2f} minutes")
 
@@ -172,7 +175,7 @@ if __name__ == "__main__":
     # Set integer ticks on the x-axis
     plt.gca().xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     # Save the plot as an image
-    plt.savefig('loss_plot.png')
+    plt.savefig('results/loss_plot.png')
 
     if ENABLE_EPOCH_TESTING:
         plot_performance(training_accuracies, validation_accuracies, "Accuracy")
