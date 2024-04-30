@@ -81,20 +81,21 @@ def plot_performance(train_metric, val_metric, metric_name):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print('Usage python3 ImageRead.py <image_folder> <training csv>')
+    if len(sys.argv) != 4:
+        print('Usage python3 ImageRead.py <image_folder> <training csv> <model.pth>')
         sys.exit(1)
     
     # CSV and image paths
     IMAGE_DIR = sys.argv[1]
     CSV_FILE = sys.argv[2]
+    MODEL_FILENAME = sys.argv[3]
 
 
     # Proportion of dataset for training (0-1)
     ENABLE_EPOCH_TESTING = True
     TRAINING_PORTION = 0.9
 
-    EPOCHS = 15
+    EPOCHS = 12
 
 
     # Check if GPU is available
@@ -182,5 +183,5 @@ if __name__ == "__main__":
 
     # Save the model weights
     print('Saving model...')
-    torch.save(model.state_dict(), 'model_weights.pth')
+    torch.save(model.state_dict(), 'MODEL_FILENAME')
     print('Saved!')

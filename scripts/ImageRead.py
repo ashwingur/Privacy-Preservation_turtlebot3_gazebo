@@ -42,7 +42,7 @@ class ImageSubscriber(Node):
         self.previous_train_index = last_image_index
 
         # How often an image will be capture in seconds
-        self.IMAGE_FREQUENCY = 0.1
+        self.IMAGE_FREQUENCY = 0.2
 
         # Initialise image directory if it doesn't exist
         self.IMAGE_PATH = image_folder
@@ -104,11 +104,12 @@ class ImageSubscriber(Node):
 
 def main(args=None):
     if len(sys.argv) != 3:
-        print('Usage python3 ImageRead.py <image_folder> <training csv>')
+        print('Usage python3 ImageRead.py <image_folder> <training csv> <model.pth>')
         return
     
     image_folder = sys.argv[1]
     training_csv = sys.argv[2]
+
     
 
     rclpy.init(args=args)

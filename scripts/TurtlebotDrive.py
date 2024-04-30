@@ -50,7 +50,7 @@ class TurtlebotDrive(Node):
         # Check if GPU is available
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = TurtlebotCNN().to(self.device)
-        self.model.load_state_dict(torch.load('model_weights.pth'))
+        self.model.load_state_dict(torch.load(sys.argv[2]))
         self.model.eval()
         self.IMAGE_RESIZE_W = 384
         self.IMAGE_RESIZE_H = 216
@@ -174,8 +174,9 @@ class TurtlebotDrive(Node):
 
 
 def main(args=None):
-    if len(sys.argv) != 2:
-        print("Warning: no training csv file provided")
+    if len(sys.argv) != 3:
+        print("Usage: python3 TurtlebotDrive.py <csv file> <model pth>")
+        sys.exit(1)
 
     rclpy.init(args=args)
     turtlebot = TurtlebotDrive()
