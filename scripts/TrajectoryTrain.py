@@ -94,7 +94,7 @@ if __name__ == "__main__":
     ENABLE_EPOCH_TESTING = True
     TRAINING_PORTION = 0.9
 
-    EPOCHS = 10
+    EPOCHS = 20
 
 
     # Check if GPU is available

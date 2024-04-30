@@ -100,7 +100,7 @@ class TurtlebotDrive(Node):
         # The label values are determined in the TurtlebotDataLoader.py
         if label == 0:
             # Right
-            self.ang_velocity = -0.2
+            self.ang_velocity = -0.1
             print('right')
         elif label == 1:
             # Straight
@@ -108,7 +108,7 @@ class TurtlebotDrive(Node):
             print('straight')
         elif label == 2:
             # Left
-            self.ang_velocity = 0.2
+            self.ang_velocity = 0.1
             print('left')
         
         self.send_movement_command(self.velocity, self.ang_velocity)
