@@ -98,7 +98,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>10 5</size>
+              <size>10 10</size>
             </plane>
           </geometry>
           <material>
@@ -145,7 +145,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>5 10</size>
+              <size>10 10</size>
             </plane>
           </geometry>
           <material>
