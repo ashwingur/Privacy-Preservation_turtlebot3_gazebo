@@ -5,6 +5,7 @@ data by mapping the input images to a steering command. The steering command is 
 a direction (left, right or straight). The model is saved so that it can be loaded by another script.
 '''
 
+import sys
 from matplotlib import ticker
 import torch
 from torch.utils.data import DataLoader, random_split
@@ -80,15 +81,21 @@ def plot_performance(train_metric, val_metric, metric_name):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print('Usage python3 ImageRead.py <image_folder> <training csv>')
+        sys.exit(1)
+    
+    # CSV and image paths
+    IMAGE_DIR = sys.argv[1]
+    CSV_FILE = sys.argv[2]
+
+
     # Proportion of dataset for training (0-1)
     ENABLE_EPOCH_TESTING = True
     TRAINING_PORTION = 0.9
 
     EPOCHS = 10
 
-    # CSV and image paths
-    CSV_FILE = "training.csv"
-    IMAGE_DIR = "training"
 
     # Check if GPU is available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

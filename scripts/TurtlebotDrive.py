@@ -3,6 +3,7 @@ evaluate where it is in the trajectory where it will then send a steering comman
 to control the turtlebot to follow the trajectory as closely as possible.
 '''
 
+import sys
 import time
 import rclpy
 from rclpy.node import Node
@@ -119,15 +120,49 @@ class TurtlebotDrive(Node):
         trained and live trajectory for comparison purposes. Also saves the plot
         to trajectory.png
         '''
+        plt.plot(self.x_positions, self.y_positions, 'r-', label='Live', alpha=0.5, linewidth=2.5)  # Plot the first set in red with lines connecting consecutive points
+        
+        # We want to plot the trained trajectories, but taking into account multiple trajectories
+        # We will differentiate these by seeing if the next point is far from the previous point
+        # If it is, then we start a new line
         df = pd.read_csv(training_csv)
         x_ref = df['x'].values
         y_ref = df['y'].values
 
+        lines_x = []
+        lines_y = []
+        current_line_x = [x_ref[0]]
+        current_line_y = [y_ref[0]]
 
-        plt.plot(self.x_positions, self.y_positions, 'r-', label='Live', alpha=0.5, linewidth=2.5)  # Plot the first set in red with lines connecting consecutive points
-        plt.plot(x_ref, y_ref, 'b-', label='Trained', alpha=0.5)  # Plot the second set in blue with lines connecting consecutive points
-        # plt.scatter(x1, y1, color='red')  # Scatter plot the points of the first set in red
-        # plt.scatter(x2, y2, color='blue')  # Scatter plot the points of the second set in blue
+        # Iterate through data points
+        for i in range(1, len(x_ref)):
+            # Check the distance between consecutive points
+            distance = ((x_ref[i] - x_ref[i-1])**2 + (y_ref[i] - y_ref[i-1])**2)**0.5
+            if distance > 0.2:
+                # Start a new line if the gap is greater than the threshold
+                lines_x.append(current_line_x)
+                lines_y.append(current_line_y)
+                current_line_x = []
+                current_line_y = []
+            # Add point to the current line
+            current_line_x.append(x_ref[i])
+            current_line_y.append(y_ref[i])
+
+        # Add the last line
+        lines_x.append(current_line_x)
+        lines_y.append(current_line_y)
+
+        # Plot each line segment
+
+        for i, (line_x, line_y) in enumerate(zip(lines_x, lines_y)):
+            # plt.plot(line_x, line_y)
+            if i == 0:
+                # Only add legend for the first line
+                plt.plot(line_x, line_y, 'b-', label='Trained', alpha=0.5)  
+            else:
+                plt.plot(line_x, line_y, 'b-', alpha=0.5)  
+
+
         plt.xlabel('X Position')  # Label for x-axis
         plt.ylabel('Y Position')  # Label for y-axis
         plt.title("Live and Trained Trajectories")
@@ -139,6 +174,9 @@ class TurtlebotDrive(Node):
 
 
 def main(args=None):
+    if len(sys.argv) != 2:
+        print("Warning: no training csv file provided")
+
     rclpy.init(args=args)
     turtlebot = TurtlebotDrive()
     # Spin in a separate thread
@@ -156,7 +194,11 @@ def main(args=None):
     print("Shutting down")
     spin_thread.join()
     turtlebot.destroy_node()
-    turtlebot.plot_trajectory('training.csv')
+    if len(sys.argv) == 2:
+        print("plotting trajectory")
+        turtlebot.plot_trajectory(sys.argv[1])
+    else:
+        print("No training csv provided, unable to plot")
     # rclpy.shutdown()
 
 if __name__ == '__main__':
