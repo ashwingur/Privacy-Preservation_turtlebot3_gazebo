@@ -59,9 +59,7 @@ class ImageHasher:
             coords = ImageHasher.generate_circular_points(width, height, min_radius, max_radius)
             pixel_values = ImageHasher.read_and_hash_image(image, coords)
             # Let x be the max, and y be the min
-            print(np.min(pixel_values),np.max(pixel_values))
             hashed_image[np.min(pixel_values),np.max(pixel_values)] += 1
-        print(hashed_image)
         # hashed_image /= 100
         cmap_colors = [(0, 0, 0), (1, 1, 1)]  # (R, G, B) values
         custom_cmap = LinearSegmentedColormap.from_list('custom', cmap_colors)
@@ -79,9 +77,9 @@ class ImageHasher:
 
 
 if __name__ == '__main__':
-    min_radius = 20
-    max_radius = 30
+    min_radius = 10
+    max_radius = 10
     # coords = ImageHasher.generate_circular_points(1920, 1080, min_radius, max_radius, int(max_radius*2*math.pi))
     # pixel_values = ImageHasher.read_and_hash_image('images/line2/1.png', coords)
     # print(pixel_values)
-    ImageHasher.hash_image('images/line2/881.png', 1000, min_radius, max_radius)
+    ImageHasher.hash_image('images/line2/726.png', 10000, min_radius, max_radius)
