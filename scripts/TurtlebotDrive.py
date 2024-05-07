@@ -160,12 +160,20 @@ class TurtlebotDrive(Node):
                 # Only add legend for the first line
                 plt.plot(line_x, line_y, 'b-', label='Trained', alpha=0.5)  
             else:
-                plt.plot(line_x, line_y, 'b-', alpha=0.5)  
+                plt.plot(line_x, line_y, 'b-', alpha=0.5)
 
+        # Setting plot limits for better figure
+        minimum_x = min(min(x_ref), min(self.x_positions)) - 1
+        maximum_x = max(max(x_ref), max(self.x_positions)) + 1
+        minimum_y = min(min(y_ref), min(self.y_positions)) - 1
+        maximum_y = max(max(y_ref), max(self.y_positions)) + 1
+
+        plt.xlim(minimum_x, maximum_x)
+        plt.ylim(minimum_y, maximum_y)
 
         plt.xlabel('X Position')  # Label for x-axis
         plt.ylabel('Y Position')  # Label for y-axis
-        plt.title("Live and Trained Trajectories")
+        # plt.title("Live and Trained Trajectories")
         plt.legend()  # Show legend
         plt.grid(True)  # Show grid
         plt.savefig("results/trajectory_comparison.png")
