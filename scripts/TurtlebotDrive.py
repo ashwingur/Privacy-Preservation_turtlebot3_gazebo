@@ -3,6 +3,7 @@ evaluate where it is in the trajectory where it will then send a steering comman
 to control the turtlebot to follow the trajectory as closely as possible.
 '''
 
+import os
 import sys
 import time
 import rclpy
@@ -176,7 +177,8 @@ class TurtlebotDrive(Node):
         # plt.title("Live and Trained Trajectories")
         plt.legend()  # Show legend
         plt.grid(True)  # Show grid
-        plt.savefig("results/trajectory_comparison.png")
+        plt.savefig(f"results/{os.path.basename(training_csv)[:-4]}_trajectory_comparison.png")
+        plt.savefig(f"results/{os.path.basename(training_csv)[:-4]}_trajectory_comparison.eps", format='eps', bbox_inches='tight')
         plt.show()  # Show the plot
 
 

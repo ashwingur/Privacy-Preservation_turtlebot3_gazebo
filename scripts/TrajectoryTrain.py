@@ -5,6 +5,7 @@ data by mapping the input images to a steering command. The steering command is 
 a direction (left, right or straight). The model is saved so that it can be loaded by another script.
 '''
 
+import os
 import sys
 from matplotlib import ticker
 import torch
@@ -71,13 +72,15 @@ def test_model(model, test_loader, device, num_classes=3):
 def plot_performance(train_metric, val_metric, metric_name):
     plt.close()
     epochs = range(1, len(train_metric) + 1)
-    plt.plot(epochs, train_metric, 'bo-', label=f'Training {metric_name}')
-    plt.plot(epochs, val_metric, 'ro-', label=f'Validation {metric_name}')
-    plt.title(f'Training and Validation {metric_name}')
+    plt.plot(epochs, train_metric, 'bo-', label=f'Training Accuracy')
+    plt.plot(epochs, val_metric, 'ro-', label=f'Validation Accuracy')
+    # plt.title(f'Training and Validation {metric_name}')
     plt.xlabel('Epochs')
+    plt.xticks(range(1, len(train_metric) + 1))
     plt.ylabel(metric_name)
     plt.legend()
     plt.savefig(f'results/Training_and_Validation_{metric_name}.png')
+    plt.savefig(f'results/Training_and_Validation_{metric_name}.eps',format='eps', bbox_inches='tight')
 
 
 if __name__ == "__main__":
@@ -93,7 +96,7 @@ if __name__ == "__main__":
 
     # Proportion of dataset for training (0-1)
     ENABLE_EPOCH_TESTING = True
-    TRAINING_PORTION = 0.90
+    TRAINING_PORTION = 0.95
 
     EPOCHS = 20
 
@@ -169,17 +172,19 @@ if __name__ == "__main__":
 
     # Plot the loss
     plt.plot(list(range(1, EPOCHS + 1)), training_losses, marker='o')
-    plt.title('Loss Over Time')
+    # plt.title('Loss Over Time')
+    plt.xticks(range(1, EPOCHS + 1))
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.grid(True)
     # Set integer ticks on the x-axis
     plt.gca().xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     # Save the plot as an image
-    plt.savefig('results/loss_plot.png')
+    plt.savefig(f'results/{os.path.basename(CSV_FILE)[:-4]}_loss_plot.png')
+    plt.savefig(f'results/{os.path.basename(CSV_FILE)[:-4]}_loss_plot.eps',format='eps', bbox_inches='tight')
 
     if ENABLE_EPOCH_TESTING:
-        plot_performance(training_accuracies, validation_accuracies, "Accuracy")
+        plot_performance(training_accuracies, validation_accuracies, f"{os.path.basename(CSV_FILE)[:-4]}_Accuracy")
 
     # Save the model weights
     print('Saving model...')
