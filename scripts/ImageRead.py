@@ -104,7 +104,7 @@ class ImageSubscriber(Node):
 
 def main(args=None):
     if len(sys.argv) != 3:
-        print('Usage python3 ImageRead.py <image_folder> <training csv> <model.pth>')
+        print('Usage python3 ImageRead.py <image_folder> <training csv>')
         return
     
     image_folder = sys.argv[1]

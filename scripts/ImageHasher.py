@@ -67,7 +67,7 @@ class ImageHasher:
         plt.imshow(np.log(hashed_image+1), cmap=custom_cmap, interpolation='nearest')
         # plt.imshow(hashed_image, cmap=custom_cmap, interpolation='nearest')
         plt.colorbar()  # Add a colorbar to show the intensity scale
-        plt.title('Heatmap')
+        # plt.title('Heatmap')
         plt.xlabel('Max intensity')
         plt.ylabel('Min intensity')
         plt.show()
@@ -82,4 +82,4 @@ if __name__ == '__main__':
     # coords = ImageHasher.generate_circular_points(1920, 1080, min_radius, max_radius, int(max_radius*2*math.pi))
     # pixel_values = ImageHasher.read_and_hash_image('images/line2/1.png', coords)
     # print(pixel_values)
-    ImageHasher.hash_image('images/line2/726.png', 10000, min_radius, max_radius)
+    ImageHasher.hash_image('images/line2/383.png', 10000, min_radius, max_radius)
