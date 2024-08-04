@@ -24,21 +24,52 @@ import matplotlib.pyplot as plt
 class TurtlebotCNN(nn.Module):
     def __init__(self):
         super(TurtlebotCNN, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 93 * 51, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 3)
+        # self.conv1 = nn.Conv2d(3, 6, 5)
+        # self.pool = nn.MaxPool2d(2, 2)
+        # self.conv2 = nn.Conv2d(6, 16, 5)
+        # self.fc1 = nn.Linear(16 * 93 * 51, 120)
+        # self.fc2 = nn.Linear(120, 84)
+        # self.fc3 = nn.Linear(84, 3)
+
+        # Convolutional layers
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1) # 3 input channels for R,G,B
+        self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
+        self.conv4 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1)
+        
+        # Pooling layer
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        
+        # Fully connected layers
+        self.fc1 = nn.Linear(256 * 16 * 16, 512) 
+        self.fc2 = nn.Linear(512, 128)
+        self.fc3 = nn.Linear(128, 3)  # Output layer for actions: left, forward, right
+
 
     def forward(self, x):
         """Forward pass of the neural network"""
+        # x = self.pool(F.relu(self.conv1(x)))
+        # x = self.pool(F.relu(self.conv2(x)))
+        # x = torch.flatten(x, 1)  # flatten all dimensions except batch
+        # x = F.relu(self.fc1(x))
+        # x = F.relu(self.fc2(x))
+        # x = self.fc3(x)
+        # return x
+
+        # Convolution + ReLU + Pooling
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = torch.flatten(x, 1)  # flatten all dimensions except batch
+        x = self.pool(F.relu(self.conv3(x)))
+        x = self.pool(F.relu(self.conv4(x)))
+        
+        # Flatten the feature map
+        x = x.view(-1, 256 * 16 * 16)
+        
+        # Fully connected layers
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
+        
         return x
     
 def test_model(model, test_loader, device, num_classes=3):
@@ -84,14 +115,19 @@ def plot_performance(train_metric, val_metric, metric_name):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print('Usage python3 ImageRead.py <image_folder> <training csv> <model.pth>')
+    if len(sys.argv) != 3:
+        print('Usage python3 ImageRead.py <scenario_name> <model.pth>')
         sys.exit(1)
     
     # CSV and image paths
-    IMAGE_DIR = sys.argv[1]
-    CSV_FILE = sys.argv[2]
-    MODEL_FILENAME = sys.argv[3]
+    SCENARIO_NAME = sys.argv[1]
+    IMAGE_DIR = os.path.join('images', SCENARIO_NAME)
+    CSV_FILE = os.path.join('csv', SCENARIO_NAME) + '.csv'
+    MODEL_FILENAME = os.path.join('models', sys.argv[2])
+
+    if not os.path.exists('results'):
+        os.makedirs('results')
+        print("'results' directory does not exist, creating it.")
 
 
     # Proportion of dataset for training (0-1)
@@ -100,14 +136,11 @@ if __name__ == "__main__":
 
     EPOCHS = 10
 
-
     # Check if GPU is available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Define transformations
-    # Resize 1920x1080 down by 5x
     data_transform = transforms.Compose([
-        transforms.Resize((384, 216)),
         transforms.ToTensor(),
     ])
 
@@ -187,6 +220,9 @@ if __name__ == "__main__":
         plot_performance(training_accuracies, validation_accuracies, f"{os.path.basename(CSV_FILE)[:-4]}_Accuracy")
 
     # Save the model weights
+    if not os.path.exists('models'):
+        os.makedirs('models')
+        print("'models' directory does not exist, creating it.")
     print('Saving model...')
     torch.save(model.state_dict(), MODEL_FILENAME)
-    print('Saved!')
+    print(f'Saved model to models/{MODEL_FILENAME}!')

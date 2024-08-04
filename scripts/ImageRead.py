@@ -49,12 +49,8 @@ class ImageSubscriber(Node):
         print(f'image path is {self.IMAGE_PATH}')
         if not os.path.exists(self.IMAGE_PATH):
             os.makedirs(self.IMAGE_PATH)
-            print("making new folder")
+            print(f"{self.IMAGE_PATH} is a new scenario, creating new directory.")
         
-        # Delete all old image data if present
-        # for filename in os.listdir(IMAGE_PATH):
-        #     if filename.endswith('.png'):
-        #         os.remove(os.path.join(IMAGE_PATH, filename))
 
     def image_callback(self, msg):
         try:
@@ -103,12 +99,22 @@ class ImageSubscriber(Node):
 
 
 def main(args=None):
-    if len(sys.argv) != 3:
-        print('Usage python3 ImageRead.py <image_folder> <training csv>')
+    if len(sys.argv) != 2:
+        print('Usage python3 ImageRead.py <scenario_name>')
         return
     
-    image_folder = sys.argv[1]
-    training_csv = sys.argv[2]
+    scenario_name = sys.argv[1]
+
+    if not os.path.exists('images'):
+        os.makedirs('images')
+        print("'images' directory does not exist, creating it.")
+    if not os.path.exists('csv'):
+        os.makedirs('csv')
+        print("'csv' directory does not exist, creating it.")
+    
+    
+    image_folder = os.path.join('images', scenario_name)
+    training_csv = os.path.join('csv', scenario_name) + '.csv'
 
     
 

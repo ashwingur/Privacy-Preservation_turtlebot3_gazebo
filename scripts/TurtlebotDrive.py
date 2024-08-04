@@ -80,8 +80,9 @@ class TurtlebotDrive(Node):
         if self.current_image is None:
             return
         # Process the current image. Resize and convert to tensor first
-        target_size = (self.IMAGE_RESIZE_W, self.IMAGE_RESIZE_H)
-        image = cv2.resize(self.current_image, target_size)
+        # target_size = (self.IMAGE_RESIZE_W, self.IMAGE_RESIZE_H)
+        # image = cv2.resize(self.current_image, target_size)
+        image = self.current_image
         
         # Transpose from RGB to tensor format and add a batch dimension to the start
         image_tensor = torch.from_numpy(np.expand_dims(np.transpose(image, (2, 1, 0)), axis=0)).float()
