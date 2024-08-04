@@ -1,5 +1,6 @@
 scripts/images/
-scripts/training/
+scripts/models/
+scripts/csv/
 .vscode/*
 
 # Byte-compiled / optimized / DLL files

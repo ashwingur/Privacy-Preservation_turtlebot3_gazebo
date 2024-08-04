@@ -42,7 +42,7 @@ class ImageSubscriber(Node):
         self.previous_train_index = last_image_index
 
         # How often an image will be capture in seconds
-        self.IMAGE_FREQUENCY = 0.4
+        self.IMAGE_FREQUENCY = 0.3
 
         # Initialise image directory if it doesn't exist
         self.IMAGE_PATH = image_folder
