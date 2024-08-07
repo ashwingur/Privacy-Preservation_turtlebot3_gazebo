@@ -2,10 +2,26 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import cv2
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Image
+from nav_msgs.msg import Odometry
 
-class TurtlebotEnvironment(gym.Env):
+class TurtlebotEnvironment(gym.Env, Node):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__('turtlebot_environment')
+        self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.subscription = self.create_subscription(
+            Image,
+            '/camera/image_raw',
+            self.image_callback,
+            10)
+        self.subscription_position = self.create_subscription(
+            Odometry,
+            '/odom',
+            self.position_callback,
+            10)
 
         N_CHANNELS = 3
         HEIGHT = 256
@@ -18,6 +34,15 @@ class TurtlebotEnvironment(gym.Env):
         self.current_image = None
 
         self.reset()
+
+    
+    def image_callback(self, msg):
+        cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        self.current_image = cv_image
+
+    def position_callback(self, msg):
+        self.position = msg.pose.pose.position
+
 
     def step(self, action):
         # https://gymnasium.farama.org/api/env/#gymnasium.Env.step
@@ -66,5 +91,6 @@ class TurtlebotEnvironment(gym.Env):
         Auxiliary information returned by step and reset
         '''
         return {}
+
 
     
