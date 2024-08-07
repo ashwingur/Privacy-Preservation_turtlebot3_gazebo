@@ -7,6 +7,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 from nav_msgs.msg import Odometry
+from cv_bridge import CvBridge
 
 class TurtlebotEnvironment(gym.Env, Node):
     def __init__(self) -> None:
@@ -22,6 +23,8 @@ class TurtlebotEnvironment(gym.Env, Node):
             '/odom',
             self.position_callback,
             10)
+        self.bridge = CvBridge()
+        self.current_image = None
 
         N_CHANNELS = 3
         HEIGHT = 256
@@ -42,9 +45,18 @@ class TurtlebotEnvironment(gym.Env, Node):
 
     def position_callback(self, msg):
         self.position = msg.pose.pose.position
+        print(self.position)
+
+    def send_movement_command(self, vel: float, angular_vel: float):
+        twist_msg = Twist()
+        twist_msg.linear.x = vel
+        twist_msg.angular.z = angular_vel
+        self.publisher_.publish(twist_msg)
 
 
     def step(self, action):
+        rclpy.spin_once(self)
+        print(action)
         # https://gymnasium.farama.org/api/env/#gymnasium.Env.step
         # Action will be the direction 0,1,2
         terminated = False
