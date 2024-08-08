@@ -9,7 +9,6 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 from nav_msgs.msg import Odometry
 from cv_bridge import CvBridge
-import subprocess
 from std_srvs.srv import Empty
 import pandas as pd
 
