@@ -9,7 +9,7 @@ from TrajectoryTrain import TurtlebotCNN
 
 rclpy.init()
 print("initialised rclpy")
-env = TurtlebotEnvironment()
+env = TurtlebotEnvironment(trajectory_csv='csv/left_turn.csv')
 
 check_env(env)
 

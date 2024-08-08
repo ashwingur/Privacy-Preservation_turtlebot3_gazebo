@@ -8086,6 +8086,7 @@
       <pose>2.13215 3.81834 0 0 -0 0</pose>
     </model>
     <model name='person_standing'>
+          <static>1</static>
       <link name='link'>
         <inertial>
           <pose>0 -0.1 0.95 0 -0 0</pose>
@@ -8632,6 +8633,7 @@
       <pose>13.9568 2.83711 0 0 -0 0</pose>
     </model>
     <model name='cricket_ball_clone'>
+      <static>1</static>
       <link name='link'>
         <pose>0 0 0.0375 0 -0 0</pose>
         <inertial>
@@ -8700,6 +8702,7 @@
       <pose>2.2412 0.007654 -0.001014 0 -0 0</pose>
     </model>
     <model name='cricket_ball_clone_0'>
+      <static>1</static>
       <link name='link'>
         <pose>0 0 0.0375 0 -0 0</pose>
         <inertial>
@@ -8768,6 +8771,7 @@
       <pose>2.38144 0.006488 -0.001014 0 -0 0</pose>
     </model>
     <model name='cricket_ball_clone_1'>
+      <static>1</static>
       <link name='link'>
         <pose>0 0 0.0375 0 -0 0</pose>
         <inertial>
@@ -10156,6 +10160,7 @@
       <pose>-1.24131 -0.01382 0 0 -0 0</pose>
     </model>
     <model name='plastic_cup'>
+          <static>1</static>
       <link name='link'>
         <pose>0 0 0.065 0 -0 0</pose>
         <inertial>
@@ -11002,6 +11007,7 @@
       <pose>-3.73056 4.03812 0 0 -0 0</pose>
     </model>
     <model name='cricket_ball_clone_clone'>
+      <static>1</static>
       <link name='link'>
         <pose>0 0 0.0375 0 -0 0</pose>
         <inertial>
