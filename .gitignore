@@ -1,6 +1,7 @@
 scripts/images/
 scripts/models/
 scripts/csv/
+scripts/logs/
 .vscode/*
 
 # Byte-compiled / optimized / DLL files

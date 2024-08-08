@@ -118,11 +118,10 @@ class TurtlebotEnvironment(gym.Env, Node):
 
         deviation = self.get_trajectory_deviation()
         reward = -deviation + 0.05
-        if deviation > 0.05:
+        if deviation > 0.1:
             # Turtlebot is too far from the path, end this episode early
-            print("TOO FAR, CALLING TRUNCATE")
             truncated = True
-            reward = -10
+            terminated = True
         # print(self.get_trajectory_deviation())
         print(reward)
 

@@ -4270,6 +4270,7 @@
       <pose>-0.086416 3.84397 0 0 -0 0</pose>
     </model>
     <model name='Construction Cone'>
+    <static>1</static>
       <link name='link'>
         <collision name='collision'>
           <geometry>
@@ -10635,7 +10636,7 @@
       </link>
     </model>
     <model name='parrot_bebop_2'>
-      <static>0</static>
+      <static>1</static>
       <pose>-0.005323 0.894723 0.062656 0 -0 0</pose>
       <link name='body'>
         <inertial>
